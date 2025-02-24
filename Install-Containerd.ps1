@@ -108,12 +108,22 @@ if ($rebootNeeded) {
 
 Write-Output "Getting ContainerD binaries"
 $global:ContainerDPath = "$env:ProgramFiles\containerd"
-mkdir -Force $global:ContainerDPath | Out-Null
-DownloadFile "$global:ContainerDPath\containerd.tar.gz" https://github.com/containerd/containerd/releases/download/v${ContainerDVersion}/containerd-${ContainerDVersion}-windows-amd64.tar.gz
-tar.exe -xvf "$global:ContainerDPath\containerd.tar.gz" --strip=1 -C $global:ContainerDPath
-$env:Path += ";$global:ContainerDPath"
-[Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Machine)
-& "C:\Program Files\containerd\containerd.exe" config default | Out-File "$global:ContainerDPath\config.toml" -Encoding ascii
+
+if (-not ($env:Path.Contains($global:ContainerDPath))) {
+    mkdir -Force $global:ContainerDPath | Out-Null
+    DownloadFile "$global:ContainerDPath\containerd.tar.gz" https://github.com/containerd/containerd/releases/download/v${ContainerDVersion}/containerd-${ContainerDVersion}-windows-amd64.tar.gz
+    tar.exe -xvf "$global:ContainerDPath\containerd.tar.gz" --strip=1 -C $global:ContainerDPath
+    $newpath = $env:Path + ";$global:ContainerDPath"
+    [Environment]::SetEnvironmentVariable("Path", $newpath, [System.EnvironmentVariableTarget]::Machine)
+    $rebootNeeded = $true
+}
+
+if ($rebootNeeded) {
+    Write-Output "Please reboot and re-run this script."
+    exit 0
+}
+
+containerd.exe config default | Out-File "$global:ContainerDPath\config.toml" -Encoding ascii
 #config file fixups
 $config = Get-Content "$global:ContainerDPath\config.toml"
 $config = $config -replace "bin_dir = (.)*$", "bin_dir = `"$CNIBinPath`""
@@ -124,7 +134,7 @@ mkdir -Force $CNIBinPath | Out-Null
 mkdir -Force $CNIConfigPath | Out-Null
 
 Write-Output "Registering ContainerD as a service"
-& "C:\Program Files\containerd\containerd.exe" --register-service
+containerd.exe --register-service
 
 Write-Output "Starting ContainerD service"
 Start-Service containerd
