@@ -108,20 +108,16 @@ if ($rebootNeeded) {
 
 Write-Output "Getting ContainerD binaries"
 $global:ContainerDPath = "$env:ProgramFiles\containerd"
-
-if (-not ($env:Path.Contains($global:ContainerDPath))) {
-    mkdir -Force $global:ContainerDPath | Out-Null
-    DownloadFile "$global:ContainerDPath\containerd.tar.gz" https://github.com/containerd/containerd/releases/download/v${ContainerDVersion}/containerd-${ContainerDVersion}-windows-amd64.tar.gz
+mkdir -Force $global:ContainerDPath | Out-Null
+DownloadFile "$global:ContainerDPath\containerd.tar.gz" https://github.com/containerd/containerd/releases/download/v${ContainerDVersion}/containerd-${ContainerDVersion}-windows-amd64.tar.gz
+try {
     tar.exe -xvf "$global:ContainerDPath\containerd.tar.gz" --strip=1 -C $global:ContainerDPath
-    $newpath = $env:Path + ";$global:ContainerDPath"
-    [Environment]::SetEnvironmentVariable("Path", $newpath, [System.EnvironmentVariableTarget]::Machine)
-    $rebootNeeded = $true
+} catch {
+    write-host "Weird tar issue over winrm occurred. Please Ignore."
 }
 
-if ($rebootNeeded) {
-    Write-Output "Please reboot and re-run this script."
-    exit 0
-}
+$env:Path += ";$global:ContainerDPath"
+[Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Machine)
 
 containerd.exe config default | Out-File "$global:ContainerDPath\config.toml" -Encoding ascii
 #config file fixups
@@ -141,7 +137,11 @@ Start-Service containerd
 
 # Install crictl from the cri-tools project which is required so that kubeadm can talk to the CRI endpoint.
 DownloadFile "$global:ContainerDPath\crictl.tar.gz" https://github.com/kubernetes-sigs/cri-tools/releases/download/v$crictlVersion/crictl-v$crictlVersion-windows-amd64.tar.gz
-tar.exe -xvf "$global:ContainerDPath\crictl.tar.gz" -C $global:ContainerDPath
+try {
+    tar.exe -xvf "$global:ContainerDPath\crictl.tar.gz" -C $global:ContainerDPath
+} catch {
+    write-host "Weird tar issue over winrm occurred. Please Ignore."
+}
 
 # Configure crictl
 mkdir -Force "$home\.crictl"
