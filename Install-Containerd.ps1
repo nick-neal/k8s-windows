@@ -113,7 +113,7 @@ DownloadFile "$global:ContainerDPath\containerd.tar.gz" https://github.com/conta
 tar.exe -xvf "$global:ContainerDPath\containerd.tar.gz" --strip=1 -C $global:ContainerDPath
 $env:Path += ";$global:ContainerDPath"
 [Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Machine)
-& "$global:ContainerDPath\containerd.exe" config default | Out-File "$global:ContainerDPath\config.toml" -Encoding ascii
+& "C:\Program Files\containerd\containerd.exe" config default | Out-File "$global:ContainerDPath\config.toml" -Encoding ascii
 #config file fixups
 $config = Get-Content "$global:ContainerDPath\config.toml"
 $config = $config -replace "bin_dir = (.)*$", "bin_dir = `"$CNIBinPath`""
@@ -124,7 +124,7 @@ mkdir -Force $CNIBinPath | Out-Null
 mkdir -Force $CNIConfigPath | Out-Null
 
 Write-Output "Registering ContainerD as a service"
-& "$global:ContainerDPath\containerd.exe" --register-service
+& "C:\Program Files\containerd\containerd.exe" --register-service
 
 Write-Output "Starting ContainerD service"
 Start-Service containerd
