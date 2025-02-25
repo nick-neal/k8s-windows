@@ -17,13 +17,12 @@ jobs:
   # This workflow contains a single job called "build"
   build-and-publish-docker-image:
     name: Build and Publish Docker Image
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
     
       - name: Build and push an image to container registry
         run: |
-          docker login -u ${{ vars.DOCKER_USER }} -p ${{ secrets.DOCKER_SECRET }}
-          docker build --file=$env:dockerfilePath -t ${{ vars.DOCKER_USER }}/$env:IMAGE_NAME`:$env:flannelVersion-hostprocess .
-          docker image push ${{ vars.DOCKER_USER }}/$env:IMAGE_NAME:$env:flannelVersion-hostprocess
-          docker logout
+          echo "${{ secrets.DOCKER_SECRET }}" | docker login -u ${{ vars.DOCKER_USER }} --password-stdin
+          docker buildx build --provenance=false --sbom=false --platform windows/amd64 --output=type=registry --pull --build-arg=flannelVersion=$flannelVersion -f $dockerfilePath -t ${{ vars.DOCKER_USER }}/$IMAGE_NAME:$flannelVersion-hostprocess .
+          docker image push ${{ vars.DOCKER_USER }}/$IMAGE_NAME:$flannelVersion-hostprocess
