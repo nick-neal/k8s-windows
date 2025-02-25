@@ -3,7 +3,7 @@ ARG BASE="mcr.microsoft.com/oss/kubernetes/windows-host-process-containers-base-
 FROM --platform=linux/amd64 curlimages/curl as bins
 ARG containernetworkingCniVersion="1.3.0"
 ARG cniVersion="0.3.0"
-ARG flannelCniVersion="v1.6.2-flannel1"
+ARG flannelCniVersion="1.6.2-flannel1"
 ARG flannelVersion="v0.26.4"
 
 # Todo simplify this
