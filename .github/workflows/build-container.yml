@@ -10,7 +10,7 @@ on:
 env:
   flannelVersion: 'v0.24.6'
   dockerfilePath: 'flanneld/Dockerfile'
-  IMAGE_NAME:      'flannel'
+  IMAGE_NAME: 'flannel'
   USER: ${{ secrets.DOCKER_USER }}
   TOKEN: ${{ secrets.DOCKER_SECRET }}
 
