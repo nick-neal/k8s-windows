@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
   
 env:
-  flannelVersion: 'v0.24.6'
+  flannelVersion: 'v0.26.4'
   dockerfilePath: 'flanneld/Dockerfile'
   IMAGE_NAME: 'flannel'
 
