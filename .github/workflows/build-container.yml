@@ -23,7 +23,7 @@ jobs:
     
       - name: Build and push an image to container registry
         run: |
-          docker login -u ${{ variables.DOCKER_USER }} -p ${{ secrets.DOCKER_SECRET }}
-          docker build --file=$env:dockerfilePath -t ${{ variables.DOCKER_USER }}/$env:IMAGE_NAME`:$env:flannelVersion-hostprocess .
-          docker image push ${{ variables.DOCKER_USER }}/$env:IMAGE_NAME:$env:flannelVersion-hostprocess
+          docker login -u ${{ vars.DOCKER_USER }} -p ${{ secrets.DOCKER_SECRET }}
+          docker build --file=$env:dockerfilePath -t ${{ vars.DOCKER_USER }}/$env:IMAGE_NAME`:$env:flannelVersion-hostprocess .
+          docker image push ${{ vars.DOCKER_USER }}/$env:IMAGE_NAME:$env:flannelVersion-hostprocess
           docker logout
