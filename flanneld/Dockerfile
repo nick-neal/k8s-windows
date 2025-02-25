@@ -20,11 +20,9 @@ RUN curl -Lo cni.zip https://github.com/microsoft/windows-container-networking/r
 RUN unzip /cni/cni.zip
 
 RUN curl -Lo flannel.exe https://github.com/flannel-io/cni-plugin/releases/download/v${flannelCniVersion}/flannel-amd64.exe
-https://github.com/flannel-io/cni-plugin/releases/download/v1.6.2-flannel1/flannel-amd64.exe
 
 WORKDIR /flannel 
 RUN curl -Lo flanneld.exe https://github.com/flannel-io/flannel/releases/download/${flannelVersion}/flanneld.exe
-https://github.com/flannel-io/flannel/releases/download/v0.26.4/flanneld.exe
 
 FROM $BASE
 
