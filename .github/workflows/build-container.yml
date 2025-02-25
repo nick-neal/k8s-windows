@@ -24,5 +24,6 @@ jobs:
       - name: Build and push an image to container registry
         run: |
           echo "${{ secrets.DOCKER_SECRET }}" | docker login -u ${{ vars.DOCKER_USER }} --password-stdin
+          docker buildx create --name img-builder --use --platform windows/amd64
           docker buildx build --provenance=false --sbom=false --platform windows/amd64 --output=type=registry --pull --build-arg=flannelVersion=$flannelVersion -f $dockerfilePath -t ${{ vars.DOCKER_USER }}/$IMAGE_NAME:$flannelVersion-hostprocess .
           docker image push ${{ vars.DOCKER_USER }}/$IMAGE_NAME:$flannelVersion-hostprocess
