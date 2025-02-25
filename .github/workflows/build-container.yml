@@ -11,8 +11,6 @@ env:
   flannelVersion: 'v0.24.6'
   dockerfilePath: 'flanneld/Dockerfile'
   IMAGE_NAME: 'flannel'
-  USER: ${{ secrets.DOCKER_USER }}
-  TOKEN: ${{ secrets.DOCKER_SECRET }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -25,7 +23,7 @@ jobs:
     
       - name: Build and push an image to container registry
         run: |
-          docker login -u $env:USER -p $env:TOKEN
-          docker build --file=$env:dockerfilePath -t $env:USER/$env:IMAGE_NAME`:$env:flannelVersion-hostprocess .
-          docker image push $env:USER/$env:IMAGE_NAME:$env:flannelVersion-hostprocess
+          docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_SECRET }}
+          docker build --file=$env:dockerfilePath -t ${{ secrets.DOCKER_USER }}/$env:IMAGE_NAME`:$env:flannelVersion-hostprocess .
+          docker image push ${{ secrets.DOCKER_USER }}/$env:IMAGE_NAME:$env:flannelVersion-hostprocess
           docker logout
