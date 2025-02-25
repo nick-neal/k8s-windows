@@ -29,7 +29,7 @@ FROM $BASE
 ENV PATH="C:\Windows\system32;C:\Windows;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;"
 
 ADD https://raw.githubusercontent.com/microsoft/SDN/master/Kubernetes/windows/hns.psm1 /flannel/hns.psm1
-COPY start.ps1 /flannel/start.ps1
+COPY ./flanneld/start.ps1 /flannel/start.ps1
 COPY --from=bins /cni /cni
 COPY --from=bins /flannel/flanneld.exe /flannel/flanneld.exe
 
