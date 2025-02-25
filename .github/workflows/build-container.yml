@@ -26,6 +26,6 @@ jobs:
       - name: Build and push an image to container registry
         run: |
           docker login -u $env:USER -p $env:TOKEN
-          docker build --file=$env:dockerfilePath -t $env:USER/$env:IMAGE_NAME:$env:flannelVersion-hostprocess .
+          docker build --file=$env:dockerfilePath -t $env:USER/$env:IMAGE_NAME`:$env:flannelVersion-hostprocess .
           docker image push $env:USER/$env:IMAGE_NAME:$env:flannelVersion-hostprocess
           docker logout
