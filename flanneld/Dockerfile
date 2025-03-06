@@ -3,8 +3,8 @@ ARG BASE="mcr.microsoft.com/oss/kubernetes/windows-host-process-containers-base-
 FROM --platform=linux/amd64 curlimages/curl as bins
 ARG containernetworkingCniVersion="1.3.0"
 ARG cniVersion="0.3.0"
-ARG flannelCniVersion="1.6.2-flannel1"
-ARG flannelVersion="v0.26.4"
+ARG flannelCniVersion="v1.6.2-flannel1"
+ARG flannelVersion="v0.26.5"
 
 # Todo simplify this
 # We need multiple sets of binaries 
@@ -19,7 +19,7 @@ RUN rm cni.tgz
 RUN curl -Lo cni.zip https://github.com/microsoft/windows-container-networking/releases/download/v${cniVersion}/windows-container-networking-cni-amd64-v${cniVersion}.zip
 RUN unzip /cni/cni.zip
 
-RUN curl -Lo flannel.exe https://github.com/flannel-io/cni-plugin/releases/download/v${flannelCniVersion}/flannel-amd64.exe
+RUN curl -Lo flannel.exe https://github.com/flannel-io/cni-plugin/releases/download/${flannelCniVersion}/flannel-amd64.exe
 
 WORKDIR /flannel 
 RUN curl -Lo flanneld.exe https://github.com/flannel-io/flannel/releases/download/${flannelVersion}/flanneld.exe
